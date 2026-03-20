@@ -1,0 +1,19 @@
+name: publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.9"
+          python-version: "3.14"
+      - name: publish
+        run: |
+          uv build --no-sources
+          uv publish --token ${{ secrets.PYPI_TOKEN }}
