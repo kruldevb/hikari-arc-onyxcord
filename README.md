@@ -32,7 +32,7 @@ Este fork está atualmente sem modificações em relação ao original. Modifica
 ### A partir do Git (Recomendado para OnyxCord)
 
 ```sh
-pip install git+https://github.com/SEU_USUARIO/hikari-arc-onyxcord.git
+pip install git+https://github.com/kruldevb/hikari-arc-onyxcord.git
 ```
 
 ### Desenvolvimento Local
