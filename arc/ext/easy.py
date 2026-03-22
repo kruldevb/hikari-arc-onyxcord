@@ -32,7 +32,7 @@ import re
 import typing as t
 
 from arc.plugin import GatewayPluginBase
-from arc.command import slash_command, slash_group
+from arc.command import slash_command
 from arc.context import GatewayContext
 from arc.abc.option import CommandOptionBase
 from arc import Permissions, Locale, AutodeferMode
@@ -42,7 +42,7 @@ if t.TYPE_CHECKING:
     from collections.abc import Callable, Sequence
 
     from arc.abc.command import CallableCommandProto
-    from arc.command.slash import SlashCommand, SlashGroup, SlashSubCommand
+    from arc.command.slash import SlashCommand, SlashSubCommand
 
 __all__ = ("EasyPlugin", "easy_plugin")
 
@@ -128,81 +128,7 @@ class EasyPlugin(GatewayPluginBase):
             return command
         
         return decorator
-
-    def slash_group(
-        self,
-        name: str,
-        description: str,
-        *,
-        guilds: Sequence[int] | int | None = None,
-        is_dm_enabled: bool = True,
-        is_nsfw: bool = False,
-        default_permissions: Permissions | None = None,
-        name_localizations: dict[Locale, str] | None = None,
-        description_localizations: dict[Locale, str] | None = None,
-    ) -> SlashGroup[GatewayContext]:
-        """Create a slash command group in this plugin.
-        
-        Args:
-            name: The name of the command group.
-            description: The description of the command group.
-            guilds: Guild IDs where this group should be registered.
-            is_dm_enabled: Whether the group can be used in DMs.
-            is_nsfw: Whether the group is age-restricted.
-            default_permissions: Default permissions required to use this group.
-            name_localizations: Localized names for the group.
-            description_localizations: Localized descriptions for the group.
-        
-        Returns:
-            A SlashGroup that can be used to add subcommands.
-        
-        Example:
-            ```python
-            admin_group = plugin.slash_group("admin", "Admin commands")
-            
-            @admin_group.include
-            @arc.slash_subcommand(name="ban", description="Ban a user")
-            async def admin_ban(ctx: GatewayContext, user: arc.Option[hikari.User, ...]):
-                await ctx.respond(f"Banned {user.mention}")
-            ```
-        """
-        group = slash_group(
-            name=name,
-            description=description,
-            guilds=guilds,
-            is_dm_enabled=is_dm_enabled,
-            is_nsfw=is_nsfw,
-            default_permissions=default_permissions,
-            name_localizations=name_localizations,
-            description_localizations=description_localizations,
-        )
-        
-        self.include_slash_group(group)
-        
-        return group
-
-
-def easy_plugin(name: str | None = None) -> EasyPlugin:
-    """Create an EasyPlugin instance.
     
-    Args:
-        name: The name of the plugin. If None, a default name will be used.
-    
-    Returns:
-        A new EasyPlugin instance.
-    
-    Example:
-        ```python
-        plugin = easy_plugin("MyCommands")
-        
-        @plugin.slash_command(name="test", description="Test command")
-        async def test(ctx: arc.GatewayContext):
-            await ctx.respond("Test!")
-        ```
-    """
-    return EasyPlugin(name or "EasyPlugin")
-
-
     def button(self, custom_id: str | re.Pattern[str], *, use_namespace: bool = True) -> Callable[[Callable], Callable]:
         """Decorator to register a button handler in this plugin.
         
@@ -271,3 +197,24 @@ def easy_plugin(name: str | None = None) -> EasyPlugin:
             get_router().register(custom_id, func, namespace)
             return func
         return decorator
+
+
+def easy_plugin(name: str | None = None) -> EasyPlugin:
+    """Create an EasyPlugin instance.
+    
+    Args:
+        name: The name of the plugin. If None, a default name will be used.
+    
+    Returns:
+        A new EasyPlugin instance.
+    
+    Example:
+        ```python
+        plugin = easy_plugin("MyCommands")
+        
+        @plugin.slash_command(name="test", description="Test command")
+        async def test(ctx: arc.GatewayContext):
+            await ctx.respond("Test!")
+        ```
+    """
+    return EasyPlugin(name or "EasyPlugin")
