@@ -132,7 +132,7 @@ class EasyPlugin(GatewayPluginBase):
             )(func)
             
             # Add to plugin
-            self.include_slash_command(command)
+            self.include(command)
             
             return command
         
