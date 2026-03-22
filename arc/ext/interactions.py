@@ -310,6 +310,12 @@ class InteractionContext:
         if self.guild_id:
             return self.app.cache.get_guild(self.guild_id)
         return None
+    
+    def get_guild(self):
+        """Get the guild object if available (method version for compatibility)."""
+        if self.guild_id:
+            return self.app.cache.get_guild(self.guild_id)
+        return None
 
 
 class InteractionRouter:
