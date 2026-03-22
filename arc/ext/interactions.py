@@ -230,15 +230,25 @@ class InteractionContext:
         """
         await self.respond(content, ephemeral=ephemeral, embed=embed, embeds=embeds, components=components, flags=flags)
     
-    async def defer(self, *, ephemeral: bool = False) -> None:
+    async def defer(self, *, ephemeral: bool = False, edit_original: bool = True) -> None:
         """Defer the interaction response.
         
         Args:
             ephemeral: Whether the deferred message should be ephemeral.
+            edit_original: If True, edits the original message (for buttons/selects).
+                          If False, creates a new message (for slash commands).
         """
         flags = hikari.MessageFlag.EPHEMERAL if ephemeral else hikari.UNDEFINED
+        
+        # For component interactions (buttons/selects), use MESSAGE_UPDATE to edit the original message
+        # For command interactions, use MESSAGE_CREATE to create a new message
+        response_type = (
+            hikari.ResponseType.DEFERRED_MESSAGE_UPDATE if edit_original
+            else hikari.ResponseType.DEFERRED_MESSAGE_CREATE
+        )
+        
         await self.interaction.create_initial_response(
-            hikari.ResponseType.DEFERRED_MESSAGE_CREATE,
+            response_type,
             flags=flags,
         )
         self._responded = True
