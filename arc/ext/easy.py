@@ -33,7 +33,7 @@ import typing as t
 
 from arc.plugin import GatewayPluginBase
 from arc.command import slash_command
-from arc.context import GatewayContext
+from arc.client import GatewayContext
 from arc.abc.option import CommandOptionBase
 from arc import Permissions, Locale, AutodeferMode
 from arc.ext.interactions import get_router
