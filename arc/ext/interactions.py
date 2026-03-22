@@ -347,9 +347,14 @@ class InteractionContext:
         Args:
             modal: A Miru modal instance to send.
         """
-        # Miru modals don't need to be "started" like views
-        # They are automatically tracked when the response is created
-        # Just send the modal response directly
+        # Register the modal with Miru client so it can handle the callback
+        global _global_miru_client
+        
+        if _global_miru_client:
+            # Start the modal with Miru client to register it for callback handling
+            _global_miru_client.start_modal(modal)
+        
+        # Send the modal response
         await self.interaction.create_modal_response(
             title=modal.title,
             custom_id=modal.custom_id,
