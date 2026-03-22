@@ -67,8 +67,11 @@ def _sanitize_response_params(
     embed: hikari.Embed | None = None,
     embeds: Sequence[hikari.Embed] | None = None,
     components: Sequence[hikari.api.ComponentBuilder] | None = None,
-) -> tuple[str | hikari.UndefinedType, hikari.UndefinedType | Sequence[hikari.Embed], hikari.UndefinedType | Sequence[hikari.api.ComponentBuilder]]:
+) -> tuple[str | hikari.UndefinedType | None, hikari.UndefinedType | Sequence[hikari.Embed] | None, hikari.UndefinedType | Sequence[hikari.api.ComponentBuilder] | None]:
     """Sanitize response parameters to avoid sending empty/unwanted values.
+    
+    When parameters are not explicitly passed (UNDEFINED), they are converted to None
+    to clear previous values instead of keeping them.
     
     Args:
         content: Message content
@@ -79,18 +82,21 @@ def _sanitize_response_params(
     Returns:
         Tuple of (sanitized_content, sanitized_embeds, sanitized_components)
     """
-    # Sanitize content - convert empty strings to UNDEFINED
-    final_content = hikari.UNDEFINED if (content is not hikari.UNDEFINED and not content) else content
+    # Sanitize content - convert UNDEFINED/empty strings to None (to clear)
+    if content is hikari.UNDEFINED or (isinstance(content, str) and not content):
+        final_content = None
+    else:
+        final_content = content
     
-    # Sanitize embeds - convert empty lists/None to UNDEFINED
-    final_embeds = hikari.UNDEFINED
+    # Sanitize embeds - convert UNDEFINED/empty lists/None to None
+    final_embeds = None
     if embeds is not None and len(embeds) > 0:
         final_embeds = embeds
     elif embed is not None:
         final_embeds = [embed]
     
-    # Sanitize components - convert empty lists/None to UNDEFINED
-    final_components = hikari.UNDEFINED
+    # Sanitize components - convert UNDEFINED/empty lists/None to None
+    final_components = None
     if components is not None and len(components) > 0:
         final_components = components
     
