@@ -138,12 +138,12 @@ class EasyPlugin(GatewayPluginBase):
         
         return decorator
     
-    def button(self, custom_id: str | re.Pattern[str], *, use_namespace: bool = True) -> Callable[[Callable], Callable]:
+    def button(self, custom_id: str | re.Pattern[str], *, use_namespace: bool = False) -> Callable[[Callable], Callable]:
         """Decorator to register a button handler in this plugin.
         
         Args:
             custom_id: The custom_id of the button (string or regex pattern).
-            use_namespace: Whether to prefix with plugin name (default: True).
+            use_namespace: Whether to prefix with plugin name (default: False).
         
         Example:
             ```python
@@ -160,12 +160,12 @@ class EasyPlugin(GatewayPluginBase):
             return func
         return decorator
     
-    def select_menu(self, custom_id: str | re.Pattern[str], *, use_namespace: bool = True) -> Callable[[Callable], Callable]:
+    def select_menu(self, custom_id: str | re.Pattern[str], *, use_namespace: bool = False) -> Callable[[Callable], Callable]:
         """Decorator to register a select menu handler in this plugin.
         
         Args:
             custom_id: The custom_id of the select menu (string or regex pattern).
-            use_namespace: Whether to prefix with plugin name (default: True).
+            use_namespace: Whether to prefix with plugin name (default: False).
         
         Example:
             ```python
@@ -183,12 +183,12 @@ class EasyPlugin(GatewayPluginBase):
             return func
         return decorator
     
-    def modal(self, custom_id: str | re.Pattern[str], *, use_namespace: bool = True) -> Callable[[Callable], Callable]:
+    def modal(self, custom_id: str | re.Pattern[str], *, use_namespace: bool = False) -> Callable[[Callable], Callable]:
         """Decorator to register a modal handler in this plugin.
         
         Args:
             custom_id: The custom_id of the modal (string or regex pattern).
-            use_namespace: Whether to prefix with plugin name (default: True).
+            use_namespace: Whether to prefix with plugin name (default: False).
         
         Example:
             ```python

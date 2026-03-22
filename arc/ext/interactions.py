@@ -261,6 +261,55 @@ class InteractionContext:
             components=components,
         )
         self._responded = True
+    
+    async def edit_response(
+        self,
+        content: str | hikari.UndefinedType = hikari.UNDEFINED,
+        *,
+        embed: hikari.Embed | None = None,
+        embeds: Sequence[hikari.Embed] | None = None,
+        components: Sequence[hikari.api.ComponentBuilder] | None = None,
+    ) -> None:
+        """Edit the deferred response.
+        
+        Args:
+            content: The new message content.
+            embed: A single embed.
+            embeds: Multiple embeds.
+            components: New message components.
+        """
+        if self._responded:
+            # If already responded with defer, edit the initial response
+            await self.interaction.edit_initial_response(
+                content=content,
+                embed=embed,
+                embeds=embeds,
+                components=components,
+            )
+        else:
+            # If not responded yet, use MESSAGE_UPDATE
+            await self.edit(content=content, embed=embed, embeds=embeds, components=components)
+    
+    async def respond_with_modal(self, modal) -> None:
+        """Respond with a modal (Miru modal).
+        
+        Args:
+            modal: A Miru modal instance to send.
+        """
+        await modal.send(self.interaction)
+        self._responded = True
+    
+    @property
+    def bot(self):
+        """Alias for app - for compatibility."""
+        return self.app
+    
+    @property
+    def guild(self):
+        """Get the guild object if available."""
+        if self.guild_id:
+            return self.app.cache.get_guild(self.guild_id)
+        return None
 
 
 class InteractionRouter:
