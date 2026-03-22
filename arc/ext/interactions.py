@@ -192,11 +192,17 @@ class InteractionContext:
         if ephemeral and flags is None:
             flags = hikari.MessageFlag.EPHEMERAL
         
+        # Hikari doesn't allow both embed and embeds, so convert embed to embeds if needed
+        final_embeds = hikari.UNDEFINED
+        if embeds is not None:
+            final_embeds = embeds
+        elif embed is not None:
+            final_embeds = [embed]
+        
         await self.interaction.create_initial_response(
             hikari.ResponseType.MESSAGE_CREATE,
             content=content,
-            embed=embed,
-            embeds=embeds,
+            embeds=final_embeds,
             components=components,
             flags=flags,
         )
@@ -253,11 +259,17 @@ class InteractionContext:
             embeds: Multiple embeds.
             components: New message components.
         """
+        # Hikari doesn't allow both embed and embeds, so convert embed to embeds if needed
+        final_embeds = hikari.UNDEFINED
+        if embeds is not None:
+            final_embeds = embeds
+        elif embed is not None:
+            final_embeds = [embed]
+        
         await self.interaction.create_initial_response(
             hikari.ResponseType.MESSAGE_UPDATE,
             content=content,
-            embed=embed,
-            embeds=embeds,
+            embeds=final_embeds,
             components=components,
         )
         self._responded = True
@@ -278,17 +290,29 @@ class InteractionContext:
             embeds: Multiple embeds.
             components: New message components.
         """
+        # Hikari doesn't allow both embed and embeds, so convert embed to embeds if needed
+        final_embeds = hikari.UNDEFINED
+        if embeds is not None:
+            final_embeds = embeds
+        elif embed is not None:
+            final_embeds = [embed]
+        
         if self._responded:
             # If already responded with defer, edit the initial response
             await self.interaction.edit_initial_response(
                 content=content,
-                embed=embed,
-                embeds=embeds,
+                embeds=final_embeds,
                 components=components,
             )
         else:
             # If not responded yet, use MESSAGE_UPDATE
-            await self.edit(content=content, embed=embed, embeds=embeds, components=components)
+            await self.interaction.create_initial_response(
+                hikari.ResponseType.MESSAGE_UPDATE,
+                content=content,
+                embeds=final_embeds,
+                components=components,
+            )
+            self._responded = True
     
     async def respond_with_modal(self, modal) -> None:
         """Respond with a modal (Miru modal).
