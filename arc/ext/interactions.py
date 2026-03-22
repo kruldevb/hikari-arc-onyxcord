@@ -62,6 +62,41 @@ _logger = logging.getLogger("arc.ext.interactions")
 _global_miru_client = None
 
 
+def _sanitize_response_params(
+    content: str | hikari.UndefinedType = hikari.UNDEFINED,
+    embed: hikari.Embed | None = None,
+    embeds: Sequence[hikari.Embed] | None = None,
+    components: Sequence[hikari.api.ComponentBuilder] | None = None,
+) -> tuple[str | hikari.UndefinedType, hikari.UndefinedType | Sequence[hikari.Embed], hikari.UndefinedType | Sequence[hikari.api.ComponentBuilder]]:
+    """Sanitize response parameters to avoid sending empty/unwanted values.
+    
+    Args:
+        content: Message content
+        embed: Single embed
+        embeds: Multiple embeds
+        components: Message components
+        
+    Returns:
+        Tuple of (sanitized_content, sanitized_embeds, sanitized_components)
+    """
+    # Sanitize content - convert empty strings to UNDEFINED
+    final_content = hikari.UNDEFINED if (content is not hikari.UNDEFINED and not content) else content
+    
+    # Sanitize embeds - convert empty lists/None to UNDEFINED
+    final_embeds = hikari.UNDEFINED
+    if embeds is not None and len(embeds) > 0:
+        final_embeds = embeds
+    elif embed is not None:
+        final_embeds = [embed]
+    
+    # Sanitize components - convert empty lists/None to UNDEFINED
+    final_components = hikari.UNDEFINED
+    if components is not None and len(components) > 0:
+        final_components = components
+    
+    return final_content, final_embeds, final_components
+
+
 class ModalValues:
     """Container for modal values with attribute access.
     
@@ -197,18 +232,16 @@ class InteractionContext:
         if ephemeral and flags is None:
             flags = hikari.MessageFlag.EPHEMERAL
         
-        # Hikari doesn't allow both embed and embeds, so convert embed to embeds if needed
-        final_embeds = hikari.UNDEFINED
-        if embeds is not None:
-            final_embeds = embeds
-        elif embed is not None:
-            final_embeds = [embed]
+        # Sanitize parameters to avoid sending empty/unwanted values
+        final_content, final_embeds, final_components = _sanitize_response_params(
+            content, embed, embeds, components
+        )
         
         await self.interaction.create_initial_response(
             hikari.ResponseType.MESSAGE_CREATE,
-            content=content,
+            content=final_content,
             embeds=final_embeds,
-            components=components,
+            components=final_components,
             flags=flags,
         )
         self._responded = True
@@ -277,27 +310,25 @@ class InteractionContext:
             embeds: Multiple embeds.
             components: New message components.
         """
-        # Hikari doesn't allow both embed and embeds, so convert embed to embeds if needed
-        final_embeds = hikari.UNDEFINED
-        if embeds is not None:
-            final_embeds = embeds
-        elif embed is not None:
-            final_embeds = [embed]
+        # Sanitize parameters to avoid sending empty/unwanted values
+        final_content, final_embeds, final_components = _sanitize_response_params(
+            content, embed, embeds, components
+        )
         
         # If already responded (e.g., via defer()), use edit_initial_response
         if self._responded:
             await self.interaction.edit_initial_response(
-                content=content,
+                content=final_content,
                 embeds=final_embeds,
-                components=components,
+                components=final_components,
             )
         else:
             # First response - use create_initial_response with MESSAGE_UPDATE
             await self.interaction.create_initial_response(
                 hikari.ResponseType.MESSAGE_UPDATE,
-                content=content,
+                content=final_content,
                 embeds=final_embeds,
-                components=components,
+                components=final_components,
             )
             self._responded = True
     
@@ -317,27 +348,25 @@ class InteractionContext:
             embeds: Multiple embeds.
             components: New message components.
         """
-        # Hikari doesn't allow both embed and embeds, so convert embed to embeds if needed
-        final_embeds = hikari.UNDEFINED
-        if embeds is not None:
-            final_embeds = embeds
-        elif embed is not None:
-            final_embeds = [embed]
+        # Sanitize parameters to avoid sending empty/unwanted values
+        final_content, final_embeds, final_components = _sanitize_response_params(
+            content, embed, embeds, components
+        )
         
         if self._responded:
             # If already responded with defer, edit the initial response
             await self.interaction.edit_initial_response(
-                content=content,
+                content=final_content,
                 embeds=final_embeds,
-                components=components,
+                components=final_components,
             )
         else:
             # If not responded yet, use MESSAGE_UPDATE
             await self.interaction.create_initial_response(
                 hikari.ResponseType.MESSAGE_UPDATE,
-                content=content,
+                content=final_content,
                 embeds=final_embeds,
-                components=components,
+                components=final_components,
             )
             self._responded = True
     
