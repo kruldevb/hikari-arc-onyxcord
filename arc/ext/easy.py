@@ -7,7 +7,7 @@ Example:
     ```python
     import hikari
     import arc
-    from arc.ext.easy import EasyPlugin
+    from arc.ext import EasyPlugin
     
     bot = hikari.GatewayBot("TOKEN")
     client = arc.GatewayClient(bot)
@@ -28,9 +28,15 @@ Example:
 
 from __future__ import annotations
 
+import re
 import typing as t
 
-import arc
+from arc.plugin import GatewayPlugin
+from arc.command import slash_command, slash_group
+from arc.context import GatewayContext
+from arc.abc.option import CommandOptionBase
+from arc import Permissions, Locale, AutodeferMode
+from arc.ext.interactions import get_router
 
 if t.TYPE_CHECKING:
     from collections.abc import Callable, Sequence
@@ -41,7 +47,7 @@ if t.TYPE_CHECKING:
 __all__ = ("EasyPlugin", "easy_plugin")
 
 
-class EasyPlugin(arc.GatewayPlugin):
+class EasyPlugin(GatewayPlugin):
     """A simplified plugin class with decorator-based command registration.
     
     Similar to disnake.ext.commands.Cog, but for arc.
@@ -51,7 +57,7 @@ class EasyPlugin(arc.GatewayPlugin):
         plugin = EasyPlugin("MyCommands")
         
         @plugin.slash_command(name="hello", description="Say hello")
-        async def hello(ctx: arc.GatewayContext):
+        async def hello(ctx: GatewayContext):
             await ctx.respond("Hello!")
         
         client.add_plugin(plugin)
@@ -66,11 +72,11 @@ class EasyPlugin(arc.GatewayPlugin):
         guilds: Sequence[int] | int | None = None,
         is_dm_enabled: bool = True,
         is_nsfw: bool = False,
-        autodefer: bool | arc.AutodeferMode = True,
-        default_permissions: arc.Permissions | None = None,
-        name_localizations: dict[arc.Locale, str] | None = None,
-        description_localizations: dict[arc.Locale, str] | None = None,
-    ) -> Callable[[CallableCommandProto[arc.GatewayContext]], SlashCommand[arc.GatewayContext]]:
+        autodefer: bool | AutodeferMode = True,
+        default_permissions: Permissions | None = None,
+        name_localizations: dict[Locale, str] | None = None,
+        description_localizations: dict[Locale, str] | None = None,
+    ) -> Callable[[CallableCommandProto[GatewayContext]], SlashCommand[GatewayContext]]:
         """Decorator to register a slash command to this plugin.
         
         Args:
@@ -87,11 +93,11 @@ class EasyPlugin(arc.GatewayPlugin):
         Example:
             ```python
             @plugin.slash_command(name="ping", description="Check bot latency")
-            async def ping(ctx: arc.GatewayContext):
+            async def ping(ctx: GatewayContext):
                 await ctx.respond("Pong!")
             ```
         """
-        def decorator(func: CallableCommandProto[arc.GatewayContext]) -> SlashCommand[arc.GatewayContext]:
+        def decorator(func: CallableCommandProto[GatewayContext]) -> SlashCommand[GatewayContext]:
             # Use function name if name not provided
             cmd_name = name or func.__name__
             
@@ -104,7 +110,7 @@ class EasyPlugin(arc.GatewayPlugin):
                 cmd_description = "No description provided"
             
             # Create the slash command
-            command = arc.slash_command(
+            command = slash_command(
                 name=cmd_name,
                 description=cmd_description,
                 guilds=guilds,
@@ -131,10 +137,10 @@ class EasyPlugin(arc.GatewayPlugin):
         guilds: Sequence[int] | int | None = None,
         is_dm_enabled: bool = True,
         is_nsfw: bool = False,
-        default_permissions: arc.Permissions | None = None,
-        name_localizations: dict[arc.Locale, str] | None = None,
-        description_localizations: dict[arc.Locale, str] | None = None,
-    ) -> SlashGroup[arc.GatewayContext]:
+        default_permissions: Permissions | None = None,
+        name_localizations: dict[Locale, str] | None = None,
+        description_localizations: dict[Locale, str] | None = None,
+    ) -> SlashGroup[GatewayContext]:
         """Create a slash command group in this plugin.
         
         Args:
@@ -156,11 +162,11 @@ class EasyPlugin(arc.GatewayPlugin):
             
             @admin_group.include
             @arc.slash_subcommand(name="ban", description="Ban a user")
-            async def admin_ban(ctx: arc.GatewayContext, user: arc.Option[hikari.User, ...]):
+            async def admin_ban(ctx: GatewayContext, user: arc.Option[hikari.User, ...]):
                 await ctx.respond(f"Banned {user.mention}")
             ```
         """
-        group = arc.slash_group(
+        group = slash_group(
             name=name,
             description=description,
             guilds=guilds,
