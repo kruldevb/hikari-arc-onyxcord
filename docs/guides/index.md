@@ -40,6 +40,15 @@ If you think something is missing or inaccurate, please [open an issue](https://
 
     [:octicons-arrow-right-24: Learn more](./interactions.md)
 
+-   :material-gesture-tap-button:{ .lg .middle } **Easy Interactions**
+
+    ---
+
+    Simplified, decorator-based system for buttons, select menus,
+    and modals - similar to disnake.ext.commands!
+
+    [:octicons-arrow-right-24: Learn more](./easy_interactions.md)
+
 -   :material-slash-forward:{ .lg .middle } **Options**
 
     ---

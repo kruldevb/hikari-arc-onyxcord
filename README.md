@@ -25,7 +25,65 @@ A command handler for [hikari](https://github.com/hikari-py/hikari) with a focus
 
 ## Status do Fork
 
-Este fork está atualmente sem modificações em relação ao original. Modificações serão adicionadas conforme necessário para suportar funcionalidades do OnyxCord. Atualizações futuras serão documentadas aqui.
+Este fork inclui melhorias significativas para facilitar o desenvolvimento de bots Discord:
+
+### ✨ Novidades
+
+#### 🎯 EasyPlugin & EasyInteraction - Sistema Estilo Disnake
+
+Sistema simplificado de interações com decorators, similar ao disnake.ext.commands:
+
+```python
+import hikari
+import arc
+from arc.ext import EasyPlugin, EasyInteraction
+
+bot = hikari.GatewayBot("TOKEN")
+client = arc.GatewayClient(bot)
+
+# Registrar o handler de interações
+bot.listen(hikari.InteractionCreateEvent)(EasyInteraction)
+
+# Criar plugin
+plugin = EasyPlugin("MyPlugin")
+
+@plugin.slash_command(name="panel", description="Open panel")
+async def panel(ctx: arc.GatewayContext):
+    row = ctx.client.rest.build_message_action_row()
+    row.add_interactive_button(hikari.ButtonStyle.PRIMARY, "config", label="⚙️ Config")
+    await ctx.respond("Control Panel", components=[row])
+
+@plugin.button("config")
+async def config_button(ctx):
+    await ctx.send("Config opened!", ephemeral=True)
+
+client.add_plugin(plugin)
+bot.run()
+```
+
+**Recursos:**
+- ✅ Decorators para botões, select menus e modals
+- ✅ Suporte a regex para IDs dinâmicos
+- ✅ Namespace automático para evitar conflitos
+- ✅ Context intuitivo (`ctx.send()`, `ctx.values.attribute`)
+- ✅ Auto-defer configurável
+- ✅ Debug mode para desenvolvimento
+- ✅ Error handling automático
+
+Veja a [documentação completa](./docs/guides/easy_interactions.md) para mais detalhes.
+
+#### 🎨 Suporte Aprimorado a Emojis Customizados
+
+Parsing automático de emojis customizados em componentes (botões, selects):
+
+```python
+# Agora funciona automaticamente!
+emoji = "<:custom:1234567890>"
+SelectOption("Label", "value", emoji=emoji)  # ✅ Funciona!
+Button("Label", "id", emoji=emoji)  # ✅ Funciona!
+```
+
+Modificações futuras serão documentadas aqui.
 
 ## Instalação
 
@@ -54,6 +112,8 @@ pip install -U hikari-arc
 
 ## Basic Usage
 
+### Standard Arc
+
 ```py
 import hikari
 import arc
@@ -69,6 +129,41 @@ async def ping(
 ) -> None:
     await ctx.respond(f"Hey {user.mention}!")
 
+bot.run()
+```
+
+### EasyPlugin with Interactions
+
+```py
+import hikari
+import arc
+from arc.ext import EasyPlugin, EasyInteraction
+
+bot = hikari.GatewayBot("TOKEN")
+client = arc.GatewayClient(bot)
+
+# Register interaction handler
+bot.listen(hikari.InteractionCreateEvent)(EasyInteraction)
+
+# Create plugin
+plugin = EasyPlugin("General")
+
+@plugin.slash_command(name="menu", description="Interactive menu")
+async def menu(ctx: arc.GatewayContext):
+    row = ctx.client.rest.build_message_action_row()
+    row.add_interactive_button(hikari.ButtonStyle.PRIMARY, "option1", label="Option 1")
+    row.add_interactive_button(hikari.ButtonStyle.SUCCESS, "option2", label="Option 2")
+    await ctx.respond("Choose an option:", components=[row])
+
+@plugin.button("option1")
+async def option1_handler(ctx):
+    await ctx.send("You chose option 1!", ephemeral=True)
+
+@plugin.button("option2")
+async def option2_handler(ctx):
+    await ctx.send("You chose option 2!", ephemeral=True)
+
+client.add_plugin(plugin)
 bot.run()
 ```
 
