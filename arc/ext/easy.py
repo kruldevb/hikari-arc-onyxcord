@@ -75,7 +75,8 @@ class EasyPlugin(GatewayPluginBase):
         description: str | None = None,
         *,
         guilds: Sequence[int] | int | None = None,
-        is_dm_enabled: bool = True,
+        integration_types: Sequence[hikari.ApplicationIntegrationType] | None = None,
+        invocation_contexts: Sequence[hikari.ApplicationContextType] | None = None,
         is_nsfw: bool = False,
         autodefer: bool | AutodeferMode = True,
         default_permissions: hikari.Permissions | None = None,
@@ -88,7 +89,8 @@ class EasyPlugin(GatewayPluginBase):
             name: The name of the command. If None, uses function name.
             description: The description of the command. If None, uses function docstring.
             guilds: Guild IDs where this command should be registered. None for global.
-            is_dm_enabled: Whether the command can be used in DMs.
+            integration_types: The integration types this command supports.
+            invocation_contexts: The context types this command can be invoked in.
             is_nsfw: Whether the command is age-restricted.
             autodefer: Whether to automatically defer the response.
             default_permissions: Default permissions required to use this command.
@@ -115,14 +117,16 @@ class EasyPlugin(GatewayPluginBase):
                 cmd_description = "No description provided"
             
             # Create the slash command
+            import hikari
             command = slash_command(
                 name=cmd_name,
                 description=cmd_description,
-                guilds=guilds,
-                is_dm_enabled=is_dm_enabled,
-                is_nsfw=is_nsfw,
-                autodefer=autodefer,
-                default_permissions=default_permissions,
+                guilds=guilds if guilds is not None else hikari.UNDEFINED,
+                integration_types=integration_types if integration_types is not None else hikari.UNDEFINED,
+                invocation_contexts=invocation_contexts if invocation_contexts is not None else hikari.UNDEFINED,
+                is_nsfw=is_nsfw if is_nsfw else hikari.UNDEFINED,
+                autodefer=autodefer if autodefer is not True else hikari.UNDEFINED,
+                default_permissions=default_permissions if default_permissions is not None else hikari.UNDEFINED,
                 name_localizations=name_localizations,
                 description_localizations=description_localizations,
             )(func)
