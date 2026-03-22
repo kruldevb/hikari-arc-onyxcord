@@ -467,6 +467,12 @@ class InteractionRouter:
         custom_id = interaction.custom_id
         ctx = InteractionContext(interaction, app)
         
+        # Skip modal interactions - let Miru handle them
+        if isinstance(interaction, hikari.ModalInteraction):
+            if self._debug:
+                _logger.debug(f"[MODAL] custom_id={custom_id} - Skipping (handled by Miru)")
+            return False
+        
         if self._debug:
             interaction_type = "BUTTON" if isinstance(interaction, hikari.ComponentInteraction) else "MODAL"
             _logger.debug(f"[{interaction_type}] custom_id={custom_id} user={interaction.user.id}")
