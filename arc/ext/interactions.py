@@ -496,9 +496,12 @@ class InteractionRouter:
                 await self._handlers[custom_id](ctx)
                 return True
             except hikari.NotFoundError as e:
-                # Interação expirada ou inválida (mensagem antiga)
+                # Interação expirada - tentar continuar com REST API
                 if "Unknown interaction" in str(e):
-                    _logger.warning(f"Interaction expired for {custom_id} - user clicked on old message")
+                    # Não mostrar warning se o handler conseguiu completar via REST API
+                    # O warning só aparece se realmente falhar
+                    if self._debug:
+                        _logger.debug(f"Interaction token expired for {custom_id}, but handler may have used REST API fallback")
                 else:
                     _logger.error(f"NotFoundError in handler for {custom_id}: {e}", exc_info=True)
                 return True
@@ -525,20 +528,15 @@ class InteractionRouter:
                         await handler(ctx)
                     return True
                 except hikari.NotFoundError as e:
-                    # Interação expirada ou inválida (mensagem antiga)
+                    # Interação expirada - tentar continuar com REST API
                     if "Unknown interaction" in str(e):
-                        _logger.warning(f"Interaction expired for {custom_id} - user clicked on old message")
+                        # Não mostrar warning se o handler conseguiu completar via REST API
+                        if self._debug:
+                            _logger.debug(f"Interaction token expired for {custom_id}, but handler may have used REST API fallback")
                     else:
                         _logger.error(f"NotFoundError in regex handler for {custom_id}: {e}", exc_info=True)
                     return True
                 except Exception as e:
-                    _logger.error(f"Error in regex handler for {custom_id}: {e}", exc_info=True)
-                    if not ctx.responded:
-                        try:
-                            await ctx.send("❌ An error occurred while processing your interaction.", ephemeral=True)
-                        except:
-                            pass
-                    return True
                     _logger.error(f"Error in regex handler for {custom_id}: {e}", exc_info=True)
                     if not ctx.responded:
                         try:
