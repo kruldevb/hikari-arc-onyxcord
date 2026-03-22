@@ -495,6 +495,13 @@ class InteractionRouter:
             try:
                 await self._handlers[custom_id](ctx)
                 return True
+            except hikari.NotFoundError as e:
+                # Interação expirada ou inválida (mensagem antiga)
+                if "Unknown interaction" in str(e):
+                    _logger.warning(f"Interaction expired for {custom_id} - user clicked on old message")
+                else:
+                    _logger.error(f"NotFoundError in handler for {custom_id}: {e}", exc_info=True)
+                return True
             except Exception as e:
                 _logger.error(f"Error in handler for {custom_id}: {e}", exc_info=True)
                 if not ctx.responded:
@@ -517,7 +524,21 @@ class InteractionRouter:
                     else:
                         await handler(ctx)
                     return True
+                except hikari.NotFoundError as e:
+                    # Interação expirada ou inválida (mensagem antiga)
+                    if "Unknown interaction" in str(e):
+                        _logger.warning(f"Interaction expired for {custom_id} - user clicked on old message")
+                    else:
+                        _logger.error(f"NotFoundError in regex handler for {custom_id}: {e}", exc_info=True)
+                    return True
                 except Exception as e:
+                    _logger.error(f"Error in regex handler for {custom_id}: {e}", exc_info=True)
+                    if not ctx.responded:
+                        try:
+                            await ctx.send("❌ An error occurred while processing your interaction.", ephemeral=True)
+                        except:
+                            pass
+                    return True
                     _logger.error(f"Error in regex handler for {custom_id}: {e}", exc_info=True)
                     if not ctx.responded:
                         try:
