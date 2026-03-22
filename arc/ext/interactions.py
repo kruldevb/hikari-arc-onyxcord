@@ -253,6 +253,9 @@ class InteractionContext:
     ) -> None:
         """Edit the original message.
         
+        Automatically detects if the interaction was already acknowledged (e.g., via defer())
+        and uses the appropriate method (create_initial_response or edit_initial_response).
+        
         Args:
             content: The new message content.
             embed: A single embed.
@@ -266,13 +269,22 @@ class InteractionContext:
         elif embed is not None:
             final_embeds = [embed]
         
-        await self.interaction.create_initial_response(
-            hikari.ResponseType.MESSAGE_UPDATE,
-            content=content,
-            embeds=final_embeds,
-            components=components,
-        )
-        self._responded = True
+        # If already responded (e.g., via defer()), use edit_initial_response
+        if self._responded:
+            await self.interaction.edit_initial_response(
+                content=content,
+                embeds=final_embeds,
+                components=components,
+            )
+        else:
+            # First response - use create_initial_response with MESSAGE_UPDATE
+            await self.interaction.create_initial_response(
+                hikari.ResponseType.MESSAGE_UPDATE,
+                content=content,
+                embeds=final_embeds,
+                components=components,
+            )
+            self._responded = True
     
     async def edit_response(
         self,
