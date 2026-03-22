@@ -334,7 +334,21 @@ class Client(t.Generic[AppT], abc.ABC):
         with suppress(Exception):
             # Try to respond to make autodefer less jarring when a command fails.
             if ctx.is_valid:
-                await ctx.respond("❌ Something went wrong. Please contact the bot developer.")
+                # Cria embed de erro efêmero
+                embed = hikari.Embed(
+                    title="❌ Algo deu errado",
+                    description="Ocorreu um erro ao executar este comando. Por favor, contate o desenvolvedor do bot.",
+                    color=0xFF0000,  # Vermelho
+                    timestamp=hikari.utc_now()
+                )
+                embed.add_field(
+                    name="Erro",
+                    value=f"```{type(exception).__name__}: {str(exception)[:100]}```",
+                    inline=False
+                )
+                embed.set_footer(text="Se o problema persistir, entre em contato com o suporte")
+                
+                await ctx.respond(embed=embed, flags=hikari.MessageFlag.EPHEMERAL)
 
     async def _create_overriding_ctx_for_command(self, ctx: Context[te.Self]) -> alluka.OverridingContext:
         inj_ctx = alluka.OverridingContext.from_client(self.injector)
