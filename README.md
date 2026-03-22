@@ -23,11 +23,77 @@
 
 A command handler for [hikari](https://github.com/hikari-py/hikari) with a focus on type-safety and correctness.
 
+## 🚀 [Guia Rápido de Início](./QUICKSTART.md)
+
+Comece em 5 minutos! Veja o [QUICKSTART.md](./QUICKSTART.md) para começar rapidamente.
+
 ## Status do Fork
 
 Este fork inclui melhorias significativas para facilitar o desenvolvimento de bots Discord:
 
 ### ✨ Novidades
+
+#### 🚀 Auto-Loading de Comandos e Plugins
+
+Sistema automático de carregamento de comandos, eventos e plugins sem necessidade de registro manual:
+
+```python
+import hikari
+import arc
+from arc.ext import load_all
+
+bot = hikari.GatewayBot("TOKEN")
+client = arc.GatewayClient(bot)
+
+# Carrega automaticamente todos os comandos e eventos
+EasyAll(client)
+
+bot.run()
+```
+
+**Estrutura de diretórios:**
+```
+your_bot/
+├── main.py
+├── commands/
+│   ├── general/
+│   │   └── ping.py
+│   └── moderation/
+│       └── ban.py
+├── events/
+│   └── ready.py
+└── plugins/
+    └── moderation.py
+```
+
+**Exemplo de comando (commands/general/ping.py):**
+```python
+from arc import slash_command, GatewayContext
+
+@slash_command("ping", "Check bot latency")
+async def ping(ctx: GatewayContext):
+    await ctx.respond("Pong!")
+```
+
+**Recursos:**
+- ✅ `load_commands()` - Carrega comandos automaticamente de `./commands`
+- ✅ `load_events()` - Carrega eventos automaticamente de `./events`
+- ✅ `load_plugins()` - Carrega plugins automaticamente de `./plugins`
+- ✅ `EasyAll()` - Carrega comandos e eventos de uma vez
+- ✅ Zero boilerplate - apenas escreva seus comandos
+- ✅ Organização baseada em arquivos
+
+**Diferença entre Plugins e Easy Commands:**
+
+| Aspecto | Plugins Tradicionais | Easy Commands |
+|---------|---------------------|---------------|
+| Registro | Manual (`client.add_plugin()`) | Automático |
+| Organização | Agrupamento lógico | Baseado em arquivos |
+| Boilerplate | Mais código | Mínimo |
+| Controle | Explícito | Implícito |
+| Uso | Features complexas | Comandos simples |
+
+Veja a [documentação completa](./docs/guides/easy_commands.md) para mais detalhes.
 
 #### 🎯 EasyPlugin & EasyInteraction - Sistema Estilo Disnake
 
@@ -112,6 +178,34 @@ pip install -U hikari-arc
 
 ## Basic Usage
 
+### Easy Commands (Auto-Loading)
+
+O jeito mais simples de começar - zero boilerplate:
+
+```py
+# main.py
+import hikari
+import arc
+from arc.ext import EasyAll
+
+bot = hikari.GatewayBot("TOKEN")
+client = arc.GatewayClient(bot)
+
+# Carrega tudo automaticamente
+EasyAll(client)
+
+bot.run()
+```
+
+```py
+# commands/general/ping.py
+from arc import slash_command, GatewayContext
+
+@slash_command("ping", "Check bot latency")
+async def ping(ctx: GatewayContext):
+    await ctx.respond("Pong!")
+```
+
 ### Standard Arc
 
 ```py
@@ -169,6 +263,13 @@ bot.run()
 
 To get started with `arc`, see the [documentation](https://arc.hypergonial.com), or the [examples](https://github.com/hypergonial/hikari-arc/tree/main/examples).
 
+### Quick Start Examples
+
+- [**Easy Commands Example**](./examples/easy_commands_example/) - Auto-loading de comandos e eventos
+- [**Easy Plugins Example**](./examples/easy_plugins_example/) - Auto-loading de plugins
+- [**Complete Example**](./examples/complete_example/) - Todos os recursos combinados
+- [**Easy Interactions Guide**](./docs/guides/easy_interactions.md) - Sistema de interações estilo disnake
+
 ## Issues and support
 
 For general usage help or questions, see the [hikari discord](https://discord.gg/hikari), if you have found a bug or have a feature request, feel free to [open an issue](https://github.com/hypergonial/hikari-arc/issues/new/choose)!
@@ -194,6 +295,26 @@ See [Contributing](./CONTRIBUTING.md).
 - [**Documentação Original**](https://arc.hypergonial.com)
 - [**Examples**](https://github.com/hypergonial/hikari-arc/tree/main/examples)
 - [**License**](https://github.com/hypergonial/hikari-arc/blob/main/LICENSE)
+
+## Guias de Uso
+
+- [**Easy Commands & Auto-Loading**](./docs/guides/easy_commands.md) - Sistema completo de auto-loading
+- [**Easy Interactions**](./docs/guides/easy_interactions.md) - Sistema de interações estilo disnake
+- [**Comparação de Abordagens**](./docs/guides/comparison.md) - Qual método usar e quando
+- [**Migração de Loaders Customizados**](./docs/guides/migration_from_custom_loader.md) - Como migrar código ofuscado
+
+## Resumo das Features
+
+| Feature | Descrição | Guia |
+|---------|-----------|------|
+| `load_commands()` | Auto-loading de comandos | [Docs](./docs/guides/easy_commands.md) |
+| `load_events()` | Auto-loading de eventos | [Docs](./docs/guides/easy_commands.md) |
+| `load_plugins()` | Auto-loading de plugins | [Docs](./docs/guides/easy_commands.md) |
+| `EasyAll()` | Carrega comandos e eventos | [Docs](./docs/guides/easy_commands.md) |
+| `EasyPlugin` | Sistema de interações simplificado | [Docs](./docs/guides/easy_interactions.md) |
+| `@button()` | Decorator para botões | [Docs](./docs/guides/easy_interactions.md) |
+| `@select_menu()` | Decorator para select menus | [Docs](./docs/guides/easy_interactions.md) |
+| `@modal()` | Decorator para modals | [Docs](./docs/guides/easy_interactions.md) |
 
 ---
 

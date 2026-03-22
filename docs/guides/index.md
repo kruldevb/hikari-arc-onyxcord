@@ -1,161 +1,142 @@
+# Índice de Guias - hikari-arc OnyxCord
+
+Documentação completa das features adicionadas neste fork.
+
+## 🚀 Começando
+
+- [**QUICKSTART**](../../QUICKSTART.md) - Comece em 5 minutos
+- [**Installation Contexts**](./installation_contexts.md) - Instalação e configuração
+- [**Hikari Fundamentals**](./hikari_fundamentals.md) - Fundamentos do Hikari
+
+## 📦 Auto-Loading (Novo!)
+
+### Easy Commands
+- [**Easy Commands & Auto-Loading**](./easy_commands.md) - Sistema completo de auto-loading
+  - `load_commands()` - Carrega comandos automaticamente
+  - `load_events()` - Carrega eventos automaticamente
+  - `load_all()` - Carrega tudo de uma vez
+  - Estrutura de diretórios
+  - Exemplos práticos
+
+### Easy Plugins
+- [**Easy Commands & Auto-Loading**](./easy_commands.md#auto-loading-plugins) - Auto-loading de plugins
+  - `load_plugins()` - Carrega plugins automaticamente
+  - Quando usar plugins vs comandos
+  - Exemplos práticos
+
+### Comparação
+- [**Comparação de Abordagens**](./comparison.md) - Qual método usar e quando
+  - Easy Commands vs Easy Plugins vs Traditional
+  - Casos de uso
+  - Métricas de decisão
+  - Exemplos lado a lado
+
+### Migração
+- [**Migração de Loaders Customizados**](./migration_from_custom_loader.md) - Migrar código ofuscado
+  - Passo a passo
+  - Antes e depois
+  - Troubleshooting
+
+## 🎯 Interações (Novo!)
+
+- [**Easy Interactions**](./easy_interactions.md) - Sistema estilo disnake
+  - `EasyPlugin` - Plugin com suporte a interações
+  - `@button()` - Decorator para botões
+  - `@select_menu()` - Decorator para select menus
+  - `@modal()` - Decorator para modals
+  - Context simplificado
+  - Regex para IDs dinâmicos
+  - Auto-defer
+
+## 📚 Comandos
+
+- [**Options**](./options.md) - Parâmetros de comandos
+- [**Command Groups**](./command_groups.md) - Grupos de comandos
+- [**Context Menu**](./context_menu.md) - Comandos de contexto
+- [**Typing**](./typing.md) - Type hints e validação
+
+## 🔧 Features Avançadas
+
+- [**Plugins & Extensions**](./plugins_extensions.md) - Sistema de plugins tradicional
+- [**Dependency Injection**](./dependency_injection.md) - Injeção de dependências
+- [**Error Handling**](./error_handling.md) - Tratamento de erros
+- [**Hooks**](./hooks.md) - Lifecycle hooks
+- [**Events**](./events.md) - Event handlers
+- [**Loops**](./loops.md) - Tasks periódicas
+- [**Concurrency Limiting**](./concurrency_limiting.md) - Controle de concorrência
+- [**Startup & Shutdown**](./startup_shutdown.md) - Lifecycle do bot
+
+## 📖 Exemplos
+
+### Básicos
+- [Easy Commands Example](../../examples/easy_commands_example/) - Auto-loading básico
+- [Easy Plugins Example](../../examples/easy_plugins_example/) - Plugins com auto-loading
+
+### Avançados
+- [Complete Example](../../examples/complete_example/) - Todos os recursos combinados
+- [Gateway Example](../../examples/gateway/) - Bot com gateway
+- [REST Example](../../examples/rest/) - Bot REST-only
+
+## 🆚 Comparações
+
+| Você quer... | Use... | Guia |
+|--------------|--------|------|
+| Começar rápido | Easy Commands | [QUICKSTART](../../QUICKSTART.md) |
+| Botões/Selects | Easy Plugins | [Easy Interactions](./easy_interactions.md) |
+| Controle total | Traditional Plugins | [Plugins](./plugins_extensions.md) |
+| Misturar tudo | Híbrido | [Complete Example](../../examples/complete_example/) |
+
+## 🔄 Fluxo de Aprendizado Recomendado
+
+1. **Iniciante**
+   - [QUICKSTART](../../QUICKSTART.md)
+   - [Easy Commands](./easy_commands.md)
+   - [Easy Commands Example](../../examples/easy_commands_example/)
+
+2. **Intermediário**
+   - [Easy Interactions](./easy_interactions.md)
+   - [Easy Plugins Example](../../examples/easy_plugins_example/)
+   - [Comparison](./comparison.md)
+
+3. **Avançado**
+   - [Traditional Plugins](./plugins_extensions.md)
+   - [Dependency Injection](./dependency_injection.md)
+   - [Complete Example](../../examples/complete_example/)
+
+4. **Expert**
+   - [Hooks](./hooks.md)
+   - [Concurrency Limiting](./concurrency_limiting.md)
+   - [Custom Extensions](./plugins_extensions.md)
+
+## 🆕 Features Exclusivas deste Fork
+
+Estas features não existem no hikari-arc original:
+
+- ✅ `load_commands()` - Auto-loading de comandos
+- ✅ `load_events()` - Auto-loading de eventos
+- ✅ `load_plugins()` - Auto-loading de plugins
+- ✅ `load_all()` - Carrega tudo
+- ✅ `EasyPlugin` - Sistema de interações simplificado
+- ✅ `@button()` - Decorator para botões
+- ✅ `@select_menu()` - Decorator para selects
+- ✅ `@modal()` - Decorator para modals
+- ✅ Documentação em Português
+- ✅ Exemplos práticos completos
+
+## 📝 Notas
+
+- Todas as features são **opcionais** e **retrocompatíveis**
+- Você pode misturar abordagens no mesmo bot
+- O código original do hikari-arc continua funcionando
+- Apenas adicionamos novas funcionalidades
+
+## 🔗 Links Úteis
+
+- [Repositório Original](https://github.com/hypergonial/hikari-arc)
+- [Documentação Original](https://arc.hypergonial.com)
+- [Discord do Hikari](https://discord.gg/hikari)
+- [Hikari Docs](https://docs.hikari-py.dev/)
+
 ---
-title: Guides
-description: Guides on how to use arc, and how app commands work on Discord
-hide:
-  - toc
----
 
-# Guides
-
-In this section you can find various in-depth guides that explain specific topics in detail. There's also fully functional [examples](https://github.com/hypergonial/hikari-arc/tree/main/examples) in the repository, if you prefer to learn that way.
-
-If you think something is missing or inaccurate, please [open an issue](https://github.com/hypergonial/hikari-arc/issues/new/choose)!
-
-<div class="grid cards" markdown>
-
--   :material-language-python:{ .lg .middle } **Typing & Type Hints**
-
-    ---
-
-    `arc` uses type-hints & typing extensively, so if you need
-    a refresher on what they are, and how to use them, start here!
-
-    [:octicons-arrow-right-24: Learn more](./typing.md)
-
--   :material-white-balance-sunny:{ .lg .middle } **Hikari Fundamentals**
-
-    ---
-
-    Learn the basics of how to use `hikari`, the foundation upon
-    which `arc` builds.
-
-    [:octicons-arrow-right-24: Learn more](./hikari_fundamentals.md)
-
--   :material-api:{ .lg .middle } **Interactions**
-
-    ---
-
-    Learn how app commands work under the hood, and
-    what you can do with them!
-
-    [:octicons-arrow-right-24: Learn more](./interactions.md)
-
--   :material-gesture-tap-button:{ .lg .middle } **Easy Interactions**
-
-    ---
-
-    Simplified, decorator-based system for buttons, select menus,
-    and modals - similar to disnake.ext.commands!
-
-    [:octicons-arrow-right-24: Learn more](./easy_interactions.md)
-
--   :material-slash-forward:{ .lg .middle } **Options**
-
-    ---
-
-    Add options to your slash commands to get user input,
-    set constraints, autocomplete, and more!
-
-    [:octicons-arrow-right-24: Learn more](./options.md)
-
--   :material-folder-open:{ .lg .middle } **Command Groups**
-
-    ---
-
-    Group your commands into command groups and subgroups,
-    nest subcommands to create a cohesive experience!
-
-    [:octicons-arrow-right-24: Learn more](./command_groups.md)
-
--   :material-menu:{ .lg .middle } **Context Menus**
-
-    ---
-
-    Add commands directly to right-click context menus via
-    user and message commands!
-
-    [:octicons-arrow-right-24: Learn more](./context_menu.md)
-
--   :octicons-download-16:{ .lg .middle } **Installation & Invocation**
-
-    ---
-
-    Learn how you can make your commands installable by
-    guilds and users alike, and how you can query this information at runtime!
-
-    [:octicons-arrow-right-24: Learn more](./installation_contexts.md)
-
--   :material-power:{ .lg .middle } **Startup & Shutdown**
-
-    ---
-
-    Manage the lifecycle of your client using startup and
-    shutdown hooks!
-
-    [:octicons-arrow-right-24: Learn more](./startup_shutdown.md)
-
--   :material-hook:{ .lg .middle } **Hooks**
-
-    ---
-
-    Execute arbitrary logic before or after a command was run,
-    perform checks, add cooldowns & more!
-
-    [:octicons-arrow-right-24: Learn more](./hooks.md)
-
--   :fontawesome-solid-fire-flame-curved:{ .lg .middle } **Error Handling**
-
-    ---
-
-    Handle errors on the command, plugin or client level with customizable
-    error handlers!
-
-    [:octicons-arrow-right-24: Learn more](./error_handling.md)
-
--   :material-note-plus:{ .lg .middle } **Plugins & Extensions**
-
-    ---
-
-    Group commands into plugins & learn how you can seperate
-    your bot into multiple source files!
-
-    [:octicons-arrow-right-24: Learn more](./plugins_extensions.md)
-
--   :fontawesome-solid-syringe:{ .lg .middle } **Dependency Injection**
-
-    ---
-
-    Manage state in a type-safe manner using **dependency injection**,
-    allowing you to use external dependencies in your bot, like a database
-    or http client!
-
-    [:octicons-arrow-right-24: Learn more](./dependency_injection.md)
-
--   :fontawesome-solid-infinity:{ .lg .middle } **Loops**
-
-    ---
-
-    Repeatedly call functions with a specific interval or crontab,
-    allowing you to schedule basic tasks.
-
-    [:octicons-arrow-right-24: Learn more](./loops.md)
-
--   :material-wall:{ .lg .middle } **Limiting Concurrency**
-
-    ---
-
-    Prevent users from invoking your command while it is already running
-    with customizable concurrency limiters!
-
-    [:octicons-arrow-right-24: Learn more](./concurrency_limiting.md)
-
--   :material-message-alert:{ .lg .middle } **Events**
-
-    ---
-
-    Listen to, and handle events coming through the Discord
-    **Gateway**, such as message being sent, channels being created, & much more!
-
-    [:octicons-arrow-right-24: Learn more](./events.md)
-
-</div>
+**Dica:** Comece pelo [QUICKSTART](../../QUICKSTART.md) e escolha o método que mais se adequa ao seu projeto!
