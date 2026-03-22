@@ -320,7 +320,8 @@ class InteractionContext:
         Args:
             modal: A Miru modal instance to send.
         """
-        await modal.send(self.interaction)
+        # Miru modals use build_response() to create the modal response
+        await modal.build_response(self.interaction)
         self._responded = True
     
     @property
