@@ -155,8 +155,14 @@ class EasyPlugin(GatewayPluginBase):
         def decorator(func: Callable) -> Callable:
             func.__interaction_type__ = "button"
             func.__custom_id__ = custom_id
+            
+            # Compile string patterns that look like regex
+            final_custom_id = custom_id
+            if isinstance(custom_id, str) and ('(' in custom_id or '[' in custom_id or '.' in custom_id or '*' in custom_id or '+' in custom_id):
+                final_custom_id = re.compile(custom_id)
+            
             namespace = self.name if use_namespace and isinstance(custom_id, str) else None
-            get_router().register(custom_id, func, namespace)
+            get_router().register(final_custom_id, func, namespace)
             return func
         return decorator
     
@@ -178,8 +184,14 @@ class EasyPlugin(GatewayPluginBase):
         def decorator(func: Callable) -> Callable:
             func.__interaction_type__ = "select"
             func.__custom_id__ = custom_id
+            
+            # Compile string patterns that look like regex
+            final_custom_id = custom_id
+            if isinstance(custom_id, str) and ('(' in custom_id or '[' in custom_id or '.' in custom_id or '*' in custom_id or '+' in custom_id):
+                final_custom_id = re.compile(custom_id)
+            
             namespace = self.name if use_namespace and isinstance(custom_id, str) else None
-            get_router().register(custom_id, func, namespace)
+            get_router().register(final_custom_id, func, namespace)
             return func
         return decorator
     
@@ -202,8 +214,14 @@ class EasyPlugin(GatewayPluginBase):
         def decorator(func: Callable) -> Callable:
             func.__interaction_type__ = "modal"
             func.__custom_id__ = custom_id
+            
+            # Compile string patterns that look like regex
+            final_custom_id = custom_id
+            if isinstance(custom_id, str) and ('(' in custom_id or '[' in custom_id or '.' in custom_id or '*' in custom_id or '+' in custom_id):
+                final_custom_id = re.compile(custom_id)
+            
             namespace = self.name if use_namespace and isinstance(custom_id, str) else None
-            get_router().register(custom_id, func, namespace)
+            get_router().register(final_custom_id, func, namespace)
             return func
         return decorator
 
