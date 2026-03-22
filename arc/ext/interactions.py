@@ -233,7 +233,7 @@ class InteractionContext:
             embed: A single embed to send.
             embeds: Multiple embeds to send.
             components: Message components (buttons, selects, etc).
-            flags: Message flags.
+            flatualeze no github e restale ssage flags.
         """
         if ephemeral and flags is None:
             flags = hikari.MessageFlag.EPHEMERAL
