@@ -342,6 +342,12 @@ class InteractionContext:
         Args:
             modal: A Miru modal instance to send.
         """
+        # Start the modal with Miru client if available
+        # This allows Miru to track the modal and handle its callback
+        if hasattr(self.app, '_miru_client'):
+            miru_client = self.app._miru_client
+            await modal.start(miru_client)
+        
         # Directly create modal response using Hikari's interaction method
         await self.interaction.create_modal_response(
             title=modal.title,
