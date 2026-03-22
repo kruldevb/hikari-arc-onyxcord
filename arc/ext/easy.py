@@ -34,11 +34,16 @@ import typing as t
 from arc.plugin import GatewayPluginBase
 from arc.command import slash_command
 from arc.client import GatewayContext
+from arc.context import AutodeferMode
+
+if t.TYPE_CHECKING:
+    import hikari
 from arc.abc.option import CommandOptionBase
-from arc import Permissions, Locale, AutodeferMode
+from arc.context import AutodeferMode
 from arc.ext.interactions import get_router
 
 if t.TYPE_CHECKING:
+    import hikari
     from collections.abc import Callable, Sequence
 
     from arc.abc.command import CallableCommandProto
@@ -73,9 +78,9 @@ class EasyPlugin(GatewayPluginBase):
         is_dm_enabled: bool = True,
         is_nsfw: bool = False,
         autodefer: bool | AutodeferMode = True,
-        default_permissions: Permissions | None = None,
-        name_localizations: dict[Locale, str] | None = None,
-        description_localizations: dict[Locale, str] | None = None,
+        default_permissions: hikari.Permissions | None = None,
+        name_localizations: dict[hikari.Locale, str] | None = None,
+        description_localizations: dict[hikari.Locale, str] | None = None,
     ) -> Callable[[CallableCommandProto[GatewayContext]], SlashCommand[GatewayContext]]:
         """Decorator to register a slash command to this plugin.
         
