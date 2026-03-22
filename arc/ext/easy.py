@@ -31,7 +31,7 @@ from __future__ import annotations
 import re
 import typing as t
 
-from arc.plugin import GatewayPlugin
+from arc.plugin import GatewayPluginBase
 from arc.command import slash_command, slash_group
 from arc.context import GatewayContext
 from arc.abc.option import CommandOptionBase
@@ -47,7 +47,7 @@ if t.TYPE_CHECKING:
 __all__ = ("EasyPlugin", "easy_plugin")
 
 
-class EasyPlugin(GatewayPlugin):
+class EasyPlugin(GatewayPluginBase):
     """A simplified plugin class with decorator-based command registration.
     
     Similar to disnake.ext.commands.Cog, but for arc.
