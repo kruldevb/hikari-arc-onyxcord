@@ -344,8 +344,14 @@ class InteractionContext:
         """
         # Start the modal with Miru client if available
         # This allows Miru to track the modal and handle its callback
-        if hasattr(self.app, '_miru_client'):
+        # Check in the client (Arc) first, then in the app (bot)
+        miru_client = None
+        if hasattr(self.client, '_miru_client'):
+            miru_client = self.client._miru_client
+        elif hasattr(self.app, '_miru_client'):
             miru_client = self.app._miru_client
+        
+        if miru_client:
             await modal.start(miru_client)
         
         # Directly create modal response using Hikari's interaction method
